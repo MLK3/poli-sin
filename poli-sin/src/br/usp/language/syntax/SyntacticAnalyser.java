@@ -1,13 +1,16 @@
 package br.usp.language.syntax;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import br.usp.language.automata.Action;
+import br.usp.language.automata.MachineCall;
 import br.usp.language.automata.StackMachine;
 import br.usp.language.automata.State;
 import br.usp.language.automata.StateMachine;
+import br.usp.language.automata.Transition;
 import br.usp.language.morph.MorphologicAnalyser;
 import br.usp.language.morph.TokenMorph;
 import br.usp.language.syntax.grammar.ContextFreeGrammar;
@@ -29,6 +32,11 @@ public class SyntacticAnalyser {
 
     private TokenMorph currentToken;
 
+    /**
+     * This constructor receives a ContextFreeGrammar that will be used to generate a StackMachine
+     * @param ma
+     * @param grammar
+     */
     public SyntacticAnalyser(MorphologicAnalyser ma, ContextFreeGrammar grammar) {
         this.ma = ma;
         this.analyser = new StackMachine(this.createSyntaxStateMachines(grammar));
@@ -38,6 +46,26 @@ public class SyntacticAnalyser {
         this.currentTreeNode = root;
     }
 
+    /**
+     * This constructor receives a StackMachine; proper actions will be set
+     * @param ma
+     * @param stackMachine
+     */
+    public SyntacticAnalyser(MorphologicAnalyser ma, StackMachine stackMachine) {
+        this.ma = ma;
+        stackMachine.restart();
+        this.setActions(stackMachine); // prepare semantic actions to build the tree
+        this.analyser = stackMachine;
+
+        SyntaxTreeNode root = new SyntaxTreeNode(stackMachine.getCurrentStateMachine().getName());
+        this.tree = new SyntaxTree(root);
+        this.currentTreeNode = root;
+    }
+
+    public void setReader(Reader reader) {
+    	this.ma.setInput(reader);
+    }
+    
     public SyntaxTree getTree() {
         return this.tree;
     }
@@ -145,7 +173,7 @@ public class SyntacticAnalyser {
         this.currentTreeNode = this.tree.getRoot();
     }
 
-    public List<StateMachine> createSyntaxStateMachines(ContextFreeGrammar grammar) {
+    protected List<StateMachine> createSyntaxStateMachines(ContextFreeGrammar grammar) {
         HashMap<String, StateMachine> stateMachines = new HashMap<String, StateMachine>();
 
         // First, create one machine for each non-terminal
@@ -236,6 +264,36 @@ public class SyntacticAnalyser {
         list.add(0, firstMachine);
         list.addAll(stateMachines.values());
         return list;
+    }
+    
+    /**
+     * Set properly the stack machine transitions actions, 
+     * so the semantic actions will build the syntactic tree
+     * @param stackMachine
+     */
+    protected void setActions(StackMachine stackMachine) {
+    	
+        // Instanciates the actions
+        // As they are always the same, we'll use the same instance always.
+        Action actionTerminal = new AddLeaf();
+        Action actionCallSubMachine = new AddNonTerminalChild();
+        Action actionReturnSubMachine = new ReturnParent();
+
+        for (StateMachine sm: stackMachine.getSubMachines()) {
+        	
+        	for (State s: sm.getAllStates()) {
+
+        		for (Transition t: s.getTransitions()) {
+        			t.setAction(actionTerminal);
+        		}
+        		for (MachineCall mc: s.getMachineCalls()) {
+        			
+        				mc.setAction(actionReturnSubMachine);
+        				mc.setActionBefore(actionCallSubMachine);
+        		}
+        	}
+        }
+        
     }
 
     private class AddNonTerminalChild implements Action {
