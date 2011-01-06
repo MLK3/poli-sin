@@ -1,0 +1,28 @@
+F -> PS
+PS -> OA
+OA -> SS + Aux + SV + SAdv
+OA -> SS + Aux + SN + SAdv
+SS -> PrAdj + NOME
+SS -> NOME
+SS -> *ppes*
+SS -> epsilon
+PrAdj -> *art*
+PrAdj -> *pdem*
+PrAdj -> *pind*
+PrAdj -> *ppos*
+NOME -> *a_nc*
+NOME -> *nc*
+NOME -> *np*
+SV -> *v* + SS + SP
+SN -> *vlig* + SAdj
+Aux -> *adv*
+Aux -> epsilon
+SAdv -> *adv*
+SAdv -> epsilon
+SP -> *prep* + SS
+SP -> *ppes*
+SP -> epsilon
+SAdj -> *adv* + *adj*
+SAdj -> *adv* + *a_nc*
+SAdj -> *adj*
+SAdj -> *a_nc*

@@ -1,0 +1,9 @@
+F -> PS
+PS -> OA
+OA -> SS + SV
+SS -> *art* + *nc*
+SS -> *np*
+SS -> *ppes*
+SS -> epsilon
+SV -> *vi*
+SV -> *vt* + SS
