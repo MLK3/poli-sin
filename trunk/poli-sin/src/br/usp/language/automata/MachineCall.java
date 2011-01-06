@@ -26,6 +26,9 @@ public class MachineCall extends Transition {
     public Action getActionBefore() {
         return actionBefore;
     }
+    public void setActionBefore(Action actionBefore) {
+    	this.actionBefore = actionBefore;
+    }
 
     public String getCalledMachineName() {
         return calledMachineName;

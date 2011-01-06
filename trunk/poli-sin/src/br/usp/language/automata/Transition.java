@@ -108,6 +108,9 @@ public class Transition {
     public Action getAction() {
         return this.action;
     }
+    public void setAction(Action action) {
+    	this.action = action;
+    }
     
     /** 
      * 

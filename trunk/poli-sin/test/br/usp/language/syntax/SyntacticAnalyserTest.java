@@ -4,14 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.usp.language.automata.StackMachine;
+import br.usp.language.automata.State;
 import br.usp.language.automata.StateMachine;
 import br.usp.language.morph.MorphologicAnalyser;
 import br.usp.language.morph.TokenMorph;
@@ -154,5 +159,53 @@ public class SyntacticAnalyserTest {
         assertEquals("[A [s Eu][B [v fui]]]", tree.polishNotation());
         
         EasyMock.verify(mockMa);
+    }
+    
+    @Test
+    public void testReceivingStackMachine() throws Exception {
+    	
+    	// cria sub-máquinas
+    	State m1a = new State("m1a");
+    	StateMachine sm1 = new StateMachine("M1", m1a);
+    	State m1b = sm1.createState("m1b");
+    	State m1c = sm1.createState("m1c");
+    	m1c.setAcceptState();    	
+    	m1a.createMachineCallTo(m1b, "M2", null, null);
+    	m1b.createTransitionTo(m1c, "nc", null);
+    	
+    	State m2a = new State("m2a");
+    	StateMachine sm2 = new StateMachine("M2", m2a);
+    	State m2b = sm2.createState("m2b");
+    	m2b.setAcceptState();
+    	m2a.createTransitionTo(m2b, "art", null);
+
+    	// cria autômato de pilha
+    	List<StateMachine> machines = new ArrayList<StateMachine>();
+    	machines.add(sm1);
+    	machines.add(sm2);
+    	StackMachine sm = new StackMachine(machines, "M1");
+    	
+        // Criando Tokens da entrada
+        Map<String, String> map1 = new HashMap<String, String>();
+        map1.put("cat","art");
+        TokenMorph token1 = new TokenMorph("o", "", map1,false);
+        Map<String, String> map2 = new HashMap<String, String>();
+        map2.put("cat","nc");
+        TokenMorph token2 = new TokenMorph("rato","",map2,false);
+        
+        // Adicionando comportamento Mock
+        EasyMock.expect(mockMa.hasMoreTokens()).andReturn(true);
+        EasyMock.expect(mockMa.getNextToken()).andReturn(token1);
+        EasyMock.expect(mockMa.hasMoreTokens()).andReturn(true);
+        EasyMock.expect(mockMa.getNextToken()).andReturn(token2);
+        EasyMock.expect(mockMa.hasMoreTokens()).andReturn(false);
+        EasyMock.replay(mockMa);
+    	
+        // realiza o reconhecimento
+    	SyntacticAnalyser synAn = new SyntacticAnalyser(mockMa, sm);
+    	synAn.analyse();
+    	
+    	// confere o resultado
+    	assertEquals("[M1 [M2 [art o]][nc rato]]", synAn.getTree().polishNotation());
     }
 }
