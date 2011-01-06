@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Thu Jan 06 11:38:56 BRST 2011
+onejar.license.required=false
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=releases/poli-sin-nodep-1-0.jar
+manifest.mergeall=true
+manifest.mainclass=
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|poli-sin>~br/~usp/~language/~syntax/~tree/~SyntaxTreeTest.class;<po|poli-sin>~br/~usp/~language/~syntax/~SyntacticIntegrationTestLuft2.class;<po|poli-sin>~br/~usp/~language/~syntax/~SyntacticIntegrationTestLuft.class;<po|poli-sin>~br/~usp/~language/~syntax/~SyntacticAnalyserTest.class;<po|poli-sin>~br/~usp/~language/~syntax/~SyntacticIntegrationTest.class;<jar|junit.jar>;<jar|cglib-nodep-2.2.jar>;<jar|easymock-3.0-javadoc.jar>;<jar|easymock-3.0.jar>;<jar|objenesis-1.2.jar>
+includes=

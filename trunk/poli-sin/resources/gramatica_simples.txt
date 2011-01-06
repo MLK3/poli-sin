@@ -1,0 +1,14 @@
+F -> PS
+PS -> OA
+OA -> SS + SV
+SS -> NOME
+SS -> *art* + NOME
+SS -> *ppes*
+SS -> epsilon
+NOME -> *a_nc*
+NOME -> *nc*
+NOME -> *np*
+SV -> *v* + OBJ
+OBJ -> SS
+OBJ -> ADJ
+ADJ -> *adj*
