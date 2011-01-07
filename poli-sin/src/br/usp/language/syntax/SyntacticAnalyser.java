@@ -117,7 +117,7 @@ public class SyntacticAnalyser {
             TokenMorph[] wordTokens = allTokens.get(i);
 
             boolean restart = false;
-            int aux = 0;
+            int aux = possibIndex[i];
             if (i == backtrackPoint) { // Backtrack point - change decision
                 aux = possibIndex[i] + 1; // Next option
                 if (aux >= wordTokens.length) { // If there arent options
