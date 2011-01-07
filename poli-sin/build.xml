@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project name="FatJar poli-sin-nodep-1.1.jar (experimental)" default="main" basedir=".">
+    <!-- this file was created by Fat-Jar Eclipse Plug-in -->
+    <!-- the ANT-Export is in a very early stage, so this -->
+    <!-- is only experimental, ANT 1.6 or above is        -->
+    <!-- required, feedback is always welcome:            -->
+    <!--       http://sourceforge.net/projects/fjep       -->
+    <!-- uncomment the following lines if using ANT outside Eclipse -->
+    <!--
+        <property name="fjepPath" value="reference:file:plugins/net.sf.fjep.fatjar_0.0.31.jarfatjar.jar"/>
+        <taskdef name="fatjar.build" classname="net.sf.fjep.anttask.FJBuildTask" classpath="${fjepPath}"/>
+        <typedef name="fatjar.manifest" classname="net.sf.fjep.anttask.FJManifestType" classpath="${fjepPath}"/>
+        <typedef name="fatjar.exclude" classname="net.sf.fjep.anttask.FJExcludeType" classpath="${fjepPath}"/>
+        <typedef name="fatjar.jarsource" classname="net.sf.fjep.anttask.FJJarSourceType" classpath="${fjepPath}"/>
+        <typedef name="fatjar.filesource" classname="net.sf.fjep.anttask.FJFileSourceType" classpath="${fjepPath}"/>
+    -->
+    <!-- uncomment the above lines to use ANT outside of Eclipse -->
+    <target name="main">
+        <fatjar.build output="poli-sin-nodep-1.1.jar">
+            <fatjar.manifest/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/bin" relpath="">
+                <fatjar.exclude relpath="br/usp/language/automata/StackMachineTest2.class"/>
+                <fatjar.exclude relpath="br/usp/language/syntax/tree/SyntaxTreeTest.class"/>
+                <fatjar.exclude relpath="br/usp/language/syntax/SyntacticAnalyserTest.class"/>
+                <fatjar.exclude relpath="br/usp/language/syntax/SyntacticIntegrationTestLuft2.class"/>
+                <fatjar.exclude relpath="br/usp/language/syntax/SyntacticIntegrationTest.class"/>
+                <fatjar.exclude relpath="br/usp/language/syntax/SyntacticIntegrationTestLuft.class"/>
+            </fatjar.filesource>
+            <fatjar.jarsource file="/home/mlk/workspace/poli-sin/lib/cglib-nodep-2.2.jar" relpath=""/>
+            <fatjar.jarsource file="/home/mlk/workspace/poli-sin/lib/jjspell-1-0.jar" relpath=""/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/resources/port.hash" relpath="port.hash"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/resources/port_amor_config.list" relpath="port_amor_config.list"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/resources/gramatica_luft2.txt" relpath="gramatica_luft2.txt"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/automata/Action.java" relpath="br/usp/language/automata/Action.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/automata/StateMachine.java" relpath="br/usp/language/automata/StateMachine.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/automata/State.java" relpath="br/usp/language/automata/State.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/automata/MachineCall.java" relpath="br/usp/language/automata/MachineCall.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/automata/Transition.java" relpath="br/usp/language/automata/Transition.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/automata/StackMachine.java" relpath="br/usp/language/automata/StackMachine.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/grammar/Terminal.java" relpath="br/usp/language/syntax/grammar/Terminal.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/grammar/GrammarLoader.java" relpath="br/usp/language/syntax/grammar/GrammarLoader.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/grammar/NonTerminal.java" relpath="br/usp/language/syntax/grammar/NonTerminal.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/grammar/ProductionRule.java" relpath="br/usp/language/syntax/grammar/ProductionRule.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/grammar/Epsilon.java" relpath="br/usp/language/syntax/grammar/Epsilon.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/grammar/ContextFreeGrammar.java" relpath="br/usp/language/syntax/grammar/ContextFreeGrammar.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/grammar/ProductionElement.java" relpath="br/usp/language/syntax/grammar/ProductionElement.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/tree/SyntaxTreeNode.java" relpath="br/usp/language/syntax/tree/SyntaxTreeNode.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/tree/SyntaxTree.java" relpath="br/usp/language/syntax/tree/SyntaxTree.java"/>
+            <fatjar.filesource path="/home/mlk/workspace/poli-sin/src/br/usp/language/syntax/SyntacticAnalyser.java" relpath="br/usp/language/syntax/SyntacticAnalyser.java"/>
+        </fatjar.build>
+    </target>
+</project>
