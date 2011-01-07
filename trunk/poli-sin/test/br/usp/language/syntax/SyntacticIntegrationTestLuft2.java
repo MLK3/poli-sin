@@ -1,5 +1,6 @@
 package br.usp.language.syntax;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -59,8 +60,7 @@ public class SyntacticIntegrationTestLuft2 {
     public void testAnalyse4() throws IOException {
         amor.setInput(new StringReader("A rata roeu a roupa de Roma"));
         sa.analyse2();
-        String expected = "[F [PS [OA [PS [OA [SS [PrAdj [art A]][NOME [nc rata]]][SV [v roeu][SS [PrAdj [art a]][NOME [nc roupa]]][SP [prep de][SS [NOME [np Roma]]]]]]]]]]";
-        System.out.println(sa.getTree().polishNotation());
+        String expected = "[F [PS [OA [SS [PrAdj [art A]][NOME [nc rata]]][SV [v roeu][SS [PrAdj [art a]][NOME [nc roupa]]][SP [prep de][SS [NOME [np Roma]]]]]]]]";
         assertEquals(expected, sa.getTree().polishNotation());
     }
 
@@ -79,12 +79,17 @@ public class SyntacticIntegrationTestLuft2 {
         String expected = "[F [PS [OA [SS [ppes Ele]][SN [vlig estava][SAdj [adv muito][a_nc doente]]]]]]";
         assertEquals(expected, sa.getTree().polishNotation());
     }
+    
+    @Test
+    public void testFalse() throws IOException {
+        amor.setInput(new StringReader("O rato esperto é"));
+        assertFalse(sa.analyse2());
+    }
 
     @Test
     public void tester() throws IOException {
-        amor.setInput(new StringReader("Eu olho você"));
+        amor.setInput(new StringReader("O rato esperto é"));
         System.out.println(sa.analyse2());
         System.out.println(sa.getTree().polishNotation());
     }
-
 }
