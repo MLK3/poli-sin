@@ -223,5 +223,8 @@ public class StackMachine {
     public void restart() {
         this.currentStateMachine = this.subMachines.get(initialStateMachineName);
         this.currentStateMachine.restart();
+        // Empty stacks!
+        this.stackMachines.clear();
+        this.stackReturnStates.clear();
     }
 }
