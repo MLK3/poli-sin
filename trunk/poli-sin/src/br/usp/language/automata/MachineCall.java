@@ -43,4 +43,32 @@ public class MachineCall extends Transition {
         if (this.actionBefore != null)
             this.actionBefore.doAction();
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime
+				* result
+				+ ((calledMachineName == null) ? 0 : calledMachineName
+						.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MachineCall other = (MachineCall) obj;
+		if (calledMachineName == null) {
+			if (other.calledMachineName != null)
+				return false;
+		} else if (!calledMachineName.equals(other.calledMachineName))
+			return false;
+		return true;
+	}
 }
