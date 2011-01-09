@@ -54,6 +54,16 @@ public class StateMachine {
     public List<State> getAllStates() {
         return this.states;
     }
+    
+    public List<Transition> getAllTransitions() {
+    	
+    	List<Transition> trans = new ArrayList<Transition>();
+    	for (State s: this.states) {
+    		for (Transition t: s.getTransitions())
+    			trans.add(t);
+    	}
+    	return trans;
+    }
 
     public State getCurrentState() {
         return currentState;
@@ -234,6 +244,18 @@ public class StateMachine {
         }
     }
 
+    // methods that change the automata behavior
+    // intended to allow adaptatvive actions
+
+    /**
+     * Changes the initial state
+     * @param s a stated previously created with the <i>createState</i> method
+     */
+    public void setInitialState(State s) {
+    	
+    	this.initialState = s;
+    }
+    
     @Override
     public String toString() {
         return "StateMachine:" + this.name + "; cs:" + this.currentState.getName();

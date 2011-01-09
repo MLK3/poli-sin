@@ -127,7 +127,60 @@ public class Transition {
         return false;
     }
     
+    // methods that change the automata behavior
+    // intended to allow adaptatvive actions
+
+	public void setFrom(State from) {
+		this.from = from;
+	}
+
+	public void setTo(State to) {
+		this.to = to;
+	}
+
+	public void setConditions(List<String> conditions) {
+		this.conditions = conditions;
+	}
+	
     @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((conditions == null) ? 0 : conditions.hashCode());
+		result = prime * result + ((from == null) ? 0 : from.hashCode());
+		result = prime * result + ((to == null) ? 0 : to.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Transition other = (Transition) obj;
+		if (conditions == null) {
+			if (other.conditions != null)
+				return false;
+		} else if (!conditions.equals(other.conditions))
+			return false;
+		if (from == null) {
+			if (other.from != null)
+				return false;
+		} else if (!from.equals(other.from))
+			return false;
+		if (to == null) {
+			if (other.to != null)
+				return false;
+		} else if (!to.equals(other.to))
+			return false;
+		return true;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder(from.getName() + " -> " + to.getName() + "; Conds: ");
         for (String cond : this.conditions) {
@@ -137,4 +190,5 @@ public class Transition {
         sb.deleteCharAt(sb.length()-1);
         return sb.toString();
     }
+
 }
