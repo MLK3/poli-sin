@@ -1,6 +1,7 @@
 package br.usp.language.automata;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -11,29 +12,28 @@ import java.util.List;
  * @version 1.1 Somente Strings sao entrada
  */
 public class State {
-	
-	public enum StateType {ACCEPT_STATE, NORMAL_STATE, ERROR_STATE};
 
-//    public static final String ACCEPT_STATE = "Accept";
-//    public static final String NORMAL_STATE = "Normal";
-//    public static final String ERROR_STATE = "Error";
+    /** Enum definition: StateType */
+    public enum StateType {
+        ACCEPT_STATE, NORMAL_STATE, ERROR_STATE
+    };
 
     /* Attributes */
 
     /** Nome identificador do estado */
     private String name;
-    
+
     private StateType type;
 
     /** Lista das transições que partem do estado em direção a outro */
     private List<Transition> transitions;
-    
+
     /** Submachine call, special type of transition */
     private List<MachineCall> machineCalls;
-    
-    /** State may have an epsilon transition */
-    private Transition epsilonTransition;
-    
+
+    /** State may have epsilon transitions */
+    private List<Transition> epsilonTransitions;
+
     /**
      * Transição que será considerada caso nenhuma das condições das transições normais, contidas na lista acima, seja
      * atendida
@@ -46,7 +46,7 @@ public class State {
         this.name = name;
         this.transitions = new ArrayList<Transition>();
         this.machineCalls = new ArrayList<MachineCall>();
-        this.epsilonTransition = null;
+        this.epsilonTransitions = new ArrayList<Transition>();
         this.alternateTransition = null;
         this.type = StateType.NORMAL_STATE;
     }
@@ -64,14 +64,7 @@ public class State {
     public StateType getType() {
         return this.type;
     }
-    
-    @Deprecated
-    public MachineCall getMachineCall() {
-        if (this.machineCalls.size() > 0)
-            return this.machineCalls.get(0);
-        return null;
-    }
-        
+
     public List<MachineCall> getMachineCalls() {
         return this.machineCalls;
     }
@@ -108,7 +101,7 @@ public class State {
     public void createMachineCallTo(State to, String machineName, Action actionBefore, Action actionAfter) {
         this.machineCalls.add(new MachineCall(this, to, actionBefore, actionAfter, machineName));
     }
-    
+
     /**
      * Cria uma nova transição e a insere na lista de transições do estado.
      * 
@@ -117,20 +110,25 @@ public class State {
      * @param action Ação que deve ser tomada quando a transição ocorrer. Pode ser null.
      */
     public void createEpsilonTransitionTo(State to, Action action) {
-        this.epsilonTransition = new Transition(this, to, Transition.EPSILON, action);
+        this.epsilonTransitions.add(new Transition(this, to, Transition.EPSILON, action));
     }
-    
+
+    @Deprecated
     public Transition getEpsilonTransition() {
-        return epsilonTransition;
+        if (!this.epsilonTransitions.isEmpty())
+            return this.epsilonTransitions.get(0);
+        else
+            return null;
     }
-    
+
+    public List<Transition> getEpsilonTransitions() {
+        return this.epsilonTransitions;
+    }
+
     public boolean hasEpsilonTransition() {
-        if (this.epsilonTransition != null) {
-            return true;
-        }
-        return false;
+        return !this.epsilonTransitions.isEmpty();
     }
-    
+
     /**
      * Creates an alternate transition to the ones in the list. This transision does not have conditions.
      * 
@@ -139,7 +137,7 @@ public class State {
     public void setAlternateTransition(State to, Action action) {
         this.alternateTransition = new Transition(this, to, action);
     }
-    
+
     public Transition getAlternateTransition() {
         return alternateTransition;
     }
@@ -152,7 +150,7 @@ public class State {
             return true;
         return false;
     }
-    
+
     /**
      * @return whether the state has machine calls or not
      */
@@ -170,7 +168,7 @@ public class State {
      */
     public State getNextState(String input) {
         // Searches for the right condition
-        
+
         for (Transition trans : this.transitions) {
             if (trans.getConditions().contains(input)) {
                 return trans.getStateTo();
@@ -184,16 +182,31 @@ public class State {
         // If none of the conditions is met
         return null;
     }
-    
+
     /**
-     * Returns the state which the epsilon transition leads to
+     * Returns the state which the first epsilon transition leads to
+     * 
      * @return null if there is not an epsilon transition
      */
+    @Deprecated
     public State getNextEpsilonState() {
-        if (this.epsilonTransition != null) {
-            return this.epsilonTransition.getStateTo();
+        if (!this.epsilonTransitions.isEmpty()) {
+            return this.epsilonTransitions.get(0).getStateTo();
         }
         return null;
+    }
+
+    /**
+     * Returns the set of state which the epsilon transition leads to
+     * 
+     * @return null if there is not an epsilon transition
+     */
+    public State[] getNextEpsilonStates() {
+        Collection<State> nextStates = new ArrayList<State>();
+        for (Transition e : this.epsilonTransitions) {
+            nextStates.add(e.getStateTo());
+        }
+        return nextStates.toArray(new State[0]);
     }
 
     /**
@@ -219,7 +232,20 @@ public class State {
         }
         return false;
     }
-    
+
+    /**
+     * @param s a state
+     * @return whether there is a transition from this state to s or not
+     */
+    public boolean containsTransitionTo(State s) {
+        for (Transition transition : this.transitions) {
+            if (transition.getStateTo().equals(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @param Name of machine to be called
      * @return whether this state has it or not
@@ -232,7 +258,6 @@ public class State {
         }
         return false;
     }
-    
 
     /**
      * Turns the state into an accept State
@@ -259,7 +284,7 @@ public class State {
             return true;
         return false;
     }
-    
+
     // methods that change the automata behavior
     // intended to allow adaptatvive actions
 
@@ -269,79 +294,71 @@ public class State {
      * @return true if the transition was removed; false if there were not such transition
      */
     public boolean removeTransition(Transition t) {
-    	
-    	return this.transitions.remove(t);
+
+        return this.transitions.remove(t);
     }
-    
+
     public void setStateType(StateType type) {
-    	
-    	this.type = type;
+
+        this.type = type;
     }
-    
+
     @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime
-				* result
-				+ ((alternateTransition == null) ? 0 : alternateTransition
-						.hashCode());
-		result = prime
-				* result
-				+ ((epsilonTransition == null) ? 0 : epsilonTransition
-						.hashCode());
-		result = prime * result
-				+ ((machineCalls == null) ? 0 : machineCalls.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((transitions == null) ? 0 : transitions.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((alternateTransition == null) ? 0 : alternateTransition.hashCode());
+        result = prime * result + ((epsilonTransitions == null) ? 0 : epsilonTransitions.hashCode());
+        result = prime * result + ((machineCalls == null) ? 0 : machineCalls.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((transitions == null) ? 0 : transitions.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		State other = (State) obj;
-		if (alternateTransition == null) {
-			if (other.alternateTransition != null)
-				return false;
-		} else if (!alternateTransition.equals(other.alternateTransition))
-			return false;
-		if (epsilonTransition == null) {
-			if (other.epsilonTransition != null)
-				return false;
-		} else if (!epsilonTransition.equals(other.epsilonTransition))
-			return false;
-		if (machineCalls == null) {
-			if (other.machineCalls != null)
-				return false;
-		} else if (!machineCalls.equals(other.machineCalls))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (transitions == null) {
-			if (other.transitions != null)
-				return false;
-		} else if (!transitions.equals(other.transitions))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        State other = (State) obj;
+        if (alternateTransition == null) {
+            if (other.alternateTransition != null)
+                return false;
+        } else if (!alternateTransition.equals(other.alternateTransition))
+            return false;
+        if (epsilonTransitions == null) {
+            if (other.epsilonTransitions != null)
+                return false;
+        } else if (!epsilonTransitions.equals(other.epsilonTransitions))
+            return false;
+        if (machineCalls == null) {
+            if (other.machineCalls != null)
+                return false;
+        } else if (!machineCalls.equals(other.machineCalls))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (transitions == null) {
+            if (other.transitions != null)
+                return false;
+        } else if (!transitions.equals(other.transitions))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        } else if (!type.equals(other.type))
+            return false;
+        return true;
+    }
 
-	@Override
+    @Override
     public String toString() {
         return this.name + ":" + this.getType();
     }
