@@ -57,6 +57,12 @@ public class State {
         return name;
     }
 
+    /**
+     * Returns all transitions with a normal condition, i.e.,
+     * do not return: machine calls or epsilon transitions
+     * @return List with these transitions
+     * @see getAllTransitions()
+     */
     public List<Transition> getTransitions() {
         return transitions;
     }
@@ -159,6 +165,19 @@ public class State {
             return true;
         return false;
     }
+    
+    /**
+     * Returns all Transitions from this state, including machineCalls and epsilon.
+     * @return
+     */
+    public List<Transition> getAllTransitions() {
+        ArrayList<Transition> all = new ArrayList<Transition>();
+        all.addAll(this.transitions);
+        all.addAll(this.epsilonTransitions);
+        all.addAll(this.machineCalls);
+        
+        return all;
+    }
 
     /**
      * Given an input, verifies which transition will be activated and return the next state.
@@ -238,7 +257,7 @@ public class State {
      * @return whether there is a transition from this state to s or not
      */
     public boolean containsTransitionTo(State s) {
-        for (Transition transition : this.transitions) {
+        for (Transition transition : this.getAllTransitions()) {
             if (transition.getStateTo().equals(s)) {
                 return true;
             }
@@ -302,16 +321,22 @@ public class State {
 
         this.type = type;
     }
+    
+    public void addTransition(Transition t) {
+        if (t.isEpsilon()) {
+            this.epsilonTransitions.add(t);
+        } else if (t.isMachineCall()) {
+            this.machineCalls.add((MachineCall)t);
+        } else {
+            this.transitions.add(t);
+        }
+    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((alternateTransition == null) ? 0 : alternateTransition.hashCode());
-        result = prime * result + ((epsilonTransitions == null) ? 0 : epsilonTransitions.hashCode());
-        result = prime * result + ((machineCalls == null) ? 0 : machineCalls.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((transitions == null) ? 0 : transitions.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
@@ -325,35 +350,12 @@ public class State {
         if (getClass() != obj.getClass())
             return false;
         State other = (State) obj;
-        if (alternateTransition == null) {
-            if (other.alternateTransition != null)
-                return false;
-        } else if (!alternateTransition.equals(other.alternateTransition))
-            return false;
-        if (epsilonTransitions == null) {
-            if (other.epsilonTransitions != null)
-                return false;
-        } else if (!epsilonTransitions.equals(other.epsilonTransitions))
-            return false;
-        if (machineCalls == null) {
-            if (other.machineCalls != null)
-                return false;
-        } else if (!machineCalls.equals(other.machineCalls))
-            return false;
         if (name == null) {
             if (other.name != null)
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (transitions == null) {
-            if (other.transitions != null)
-                return false;
-        } else if (!transitions.equals(other.transitions))
-            return false;
-        if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
+        if (type != other.type)
             return false;
         return true;
     }
