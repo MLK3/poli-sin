@@ -50,7 +50,7 @@ public class SyntacticIntegrationTest {
     public void testAnalyse3() throws IOException {
         amor.setInput(new StringReader("O professor esteve longe"));
         sa.analyse();
-        //System.out.println(sa.getTree().polishNotation());
+        System.out.println(sa.getTree().polishNotation());
         assertEquals("[F [PS [OA [SS [art O][NOME [nc professor]]][SV [v esteve][OBJ [ADJ [adj longe]]]]]]]", 
                 sa.getTree().polishNotation());
     }
