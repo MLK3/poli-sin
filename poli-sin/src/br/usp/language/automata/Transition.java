@@ -152,7 +152,7 @@ public class Transition {
         this.to.addTransition(this);
         State aux = this.from;
         this.from = this.to;
-        this.to = this.from;
+        this.to = aux;
     }
 
     @Override
