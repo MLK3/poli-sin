@@ -65,6 +65,7 @@ public class ContextFreeGrammar {
     public Set<ProductionRule> getRules() {
         return rules;
     }
+    
     public void addRule(ProductionRule rule) {
         rules.add(rule);        
     }

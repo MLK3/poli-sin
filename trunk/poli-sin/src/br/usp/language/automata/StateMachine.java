@@ -56,11 +56,9 @@ public class StateMachine {
     }
     
     public List<Transition> getAllTransitions() {
-    	
-    	List<Transition> trans = new ArrayList<Transition>();
+        List<Transition> trans = new ArrayList<Transition>();
     	for (State s: this.states) {
-    		for (Transition t: s.getTransitions())
-    			trans.add(t);
+    		trans.addAll(s.getAllTransitions());
     	}
     	return trans;
     }

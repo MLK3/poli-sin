@@ -26,11 +26,20 @@ public class ProductionRule {
     }
     
     /**
-     * Adiciona produto e à regra.
+     * Adiciona produto e à regra (no final).
      * @param e
      */
     public void add(ProductionElement e) {
         products.add(e);
+    }
+    
+    /**
+     * Adiciona produto e à regra (no indice index).
+     * @param index
+     * @param e
+     */
+    public void add(int index, ProductionElement e) {
+        products.add(index, e);
     }
     
     public String toString() {
