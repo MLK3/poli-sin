@@ -84,7 +84,7 @@ public class StackMachine {
      */
     public boolean input(String input) {
         boolean consumed = false;
-        int max = 10;
+        int max = 100;
         int i = 0;
         
         // Saves current state

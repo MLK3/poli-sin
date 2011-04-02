@@ -264,6 +264,19 @@ public class State {
         }
         return false;
     }
+    
+    /**
+     * @param s a state
+     * @return Transition from this state to state s. Null, if does not exist.
+     */
+    public Transition getTransitionTo(State s) {
+        for (Transition transition : this.getAllTransitions()) {
+            if (transition.getStateTo().equals(s)) {
+                return transition;
+            }
+        }
+        return null;
+    }
 
     /**
      * @param Name of machine to be called
